@@ -88,5 +88,5 @@ echo ""
 echo "To add worker nodes to the cluster, run the following command on each worker:"
 echo "-------------------------------------------------------------------------"
 kubeadm token create --print-join-command
-echo "Use 'kubectl get nodes"
+echo "Use 'kubectl get nodes' to get the nodes list."
 echo "-------------------------------------------------------------------------"
