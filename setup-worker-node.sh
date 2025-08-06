@@ -2,7 +2,7 @@
 
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
-  echo "This script must be run as root. Please use sudo." >&2
+  echo "This script must be run as root. Please use 'sudo <file-name>' or 'su -'." >&2
   exit 1
 fi
 
@@ -13,6 +13,10 @@ echo "--> [1/3] Running prerequisite steps..."
 # Disable swap
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# Install the docker
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf install containerd.io
 
 # Enable kernel modules
 cat <<EOF > /etc/modules-load.d/k8s.conf
