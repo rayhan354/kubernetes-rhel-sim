@@ -16,7 +16,7 @@ sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Install the docker
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install containerd.io
+dnf install -y containerd.io
 
 # Enable kernel modules
 cat <<EOF > /etc/modules-load.d/k8s.conf
