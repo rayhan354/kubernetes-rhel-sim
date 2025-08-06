@@ -10,6 +10,57 @@ echo "### [PHASE 1] Starting Kubernetes Control-Plane Setup ###"
 
 # --- [PREREQUISITES] ---
 echo "--> [1/4] Running prerequisite steps..."
+# --- Source OS information ---
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+else
+    echo "Cannot determine OS version. /etc/os-release not found."
+    exit 1
+fi
+
+# Install the docker
+dnf install –y dnf-plugins-core 
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+dnf config-manager --set-enabled crb || 
+systemctl enable --now docker
+
+
+
+# Check for RHEL
+if [[ $ID == "rhel" ]]; then
+    if [[ $VERSION_ID == 9* ]]; then
+        echo "Enabling CodeReady Builder for RHEL 9..."
+        subscription-manager repos --enable codeready-builder-for-rhel-9-x86_64-rpms
+    elif [[ $VERSION_ID == 8* ]]; then
+        echo "Enabling CodeReady Builder for RHEL 8..."
+        subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+    else
+        echo "Unsupported RHEL version: $VERSION_ID"
+        exit 1
+    fi
+    
+# Check for CentOS
+elif [[ $ID == "centos" ]]; then
+    if [[ $VERSION_ID == 9* ]]; then
+        echo "Enabling CRB repository for CentOS Stream 9..."
+        dnf config-manager --set-enabled crb
+    elif [[ $VERSION_ID == 8* ]]; then
+        # For CentOS 8, the repo was called "PowerTools"
+        echo "Enabling PowerTools repository for CentOS Stream 8..."
+        dnf config-manager --set-enabled powertools
+    else
+        echo "Unsupported CentOS version: $VERSION_ID"
+        exit 1
+    fi
+# Handle other operating systems
+else
+    echo "This script is intended for RHEL or CentOS only. Aborting."
+    exit 1
+fi
+
+docker version
+
 # Disable swap
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
