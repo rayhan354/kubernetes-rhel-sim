@@ -118,12 +118,12 @@ systemctl enable --now kubelet > /dev/null 2>&1
 
 # --- [INITIALIZE CLUSTER] ---
 echo "--> [4/4] Initializing Kubernetes cluster with kubeadm..."
-# Initialize control plane
-kubeadm init --pod-network-cidr=192.168.0.0/16
-
 # --- [NETWORK CNI] ---
 echo "--> Installing Calico network CNI..."
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+
+# Initialize control plane
+kubeadm init --pod-network-cidr=192.168.0.0/16
 
 # Configure kubectl for the current user
 echo "--> Configuring kubectl for user: $(logname)"
