@@ -18,12 +18,6 @@ echo "### [PHASE 1] Starting Kubernetes Worker Node Setup ###"
 
 # --- [PREREQUISITES] ---
 echo "--> [1/3] Running prerequisite steps..."
-# Install the docker
-dnf install –y dnf-plugins-core 
-dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-dnf config-manager --set-enabled crb || 
-systemctl enable --now docker
 
 # Check for RHEL
 if [[ $ID == "rhel" ]]; then
@@ -56,6 +50,13 @@ else
     echo "This script is intended for RHEL or CentOS only. Aborting."
     exit 1
 fi
+
+# Install the docker
+dnf install –y dnf-plugins-core 
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+dnf config-manager --set-enabled crb || 
+systemctl enable --now docker
 
 docker version
 
