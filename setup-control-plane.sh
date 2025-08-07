@@ -121,15 +121,15 @@ echo "--> [4/4] Initializing Kubernetes cluster with kubeadm..."
 # Initialize control plane
 kubeadm init --pod-network-cidr=192.168.0.0/16
 
+# --- [NETWORK CNI] ---
+echo "--> Installing Calico network CNI..."
+kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+
 # Configure kubectl for the current user
 echo "--> Configuring kubectl for user: $(logname)"
 mkdir -p "/home/$(logname)/.kube"
 cp -i /etc/kubernetes/admin.conf "/home/$(logname)/.kube/config"
 chown "$(id -u $(logname)):$(id -g $(logname))" "/home/$(logname)/.kube/config"
-
-# --- [NETWORK CNI] ---
-echo "--> Installing Calico network CNI..."
-kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
 
 echo ""
 echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
