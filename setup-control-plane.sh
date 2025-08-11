@@ -131,18 +131,18 @@ kubeadm init --pod-network-cidr=192.168.0.0/16
 
 sleep 5
 
-# --- [NETWORK CNI] ---
-echo "--> Installing Calico network CNI..."
-# <-- CHANGE: Updated Calico manifest URL to the latest version recommended by Project Calico
-kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.0/manifests/calico.yaml
-
-sleep 5
-
 # Configure kubectl for the current user
 echo "--> Configuring kubectl for user: $(logname)"
 mkdir -p "/home/$(logname)/.kube"
 cp -i /etc/kubernetes/admin.conf "/home/$(logname)/.kube/config"
 chown "$(id -u $(logname)):$(id -g $(logname))" "/home/$(logname)/.kube/config"
+
+sleep 5
+
+# --- [NETWORK CNI] ---
+echo "--> Installing Calico network CNI..."
+# <-- CHANGE: Updated Calico manifest URL to the latest version recommended by Project Calico
+kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.0/manifests/calico.yaml
 
 echo ""
 echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
