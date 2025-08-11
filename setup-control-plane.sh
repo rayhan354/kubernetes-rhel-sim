@@ -104,18 +104,18 @@ systemctl enable containerd > /dev/null 2>&1
 echo "--> [3/4] Installing kubeadm, kubelet, and kubectl..."
 
 # Define the latest Kubernetes version
-K8S_VERSION="v1.30" # <-- CHANGE: Updated to the latest stable version
+K8S_VERSION="v1.33" # <-- CHANGE: Updated to the latest stable version
 
 # Add Kubernetes repo using the new community-owned repository
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 # <-- CHANGE: Updated repository URL to point to the latest stable version channel
-baseurl=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/
 enabled=1
 gpgcheck=1
 # <-- CHANGE: Updated GPG key URL to match the new repository
-gpgkey=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/repodata/repomd.xml.key
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
