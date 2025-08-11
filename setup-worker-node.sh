@@ -2,64 +2,14 @@
 
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
-  echo "This script must be run as root. Please use 'sudo <file-name>' or 'su -'." >&2
+  echo "This script must be run as root. Please use sudo." >&2
   exit 1
-fi
-
-# --- Source OS information ---
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-else
-    echo "Cannot determine OS version. /etc/os-release not found."
-    exit 1
 fi
 
 echo "### [PHASE 1] Starting Kubernetes Worker Node Setup ###"
 
 # --- [PREREQUISITES] ---
 echo "--> [1/3] Running prerequisite steps..."
-
-# Check for RHEL
-if [[ $ID == "rhel" ]]; then
-    if [[ $VERSION_ID == 9* ]]; then
-        echo "Enabling CodeReady Builder for RHEL 9..."
-        subscription-manager repos --enable codeready-builder-for-rhel-9-x86_64-rpms
-    elif [[ $VERSION_ID == 8* ]]; then
-        echo "Enabling CodeReady Builder for RHEL 8..."
-        subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
-    else
-        echo "Unsupported RHEL version: $VERSION_ID"
-        exit 1
-    fi
-
-# Check for CentOS
-elif [[ $ID == "centos" ]]; then
-    if [[ $VERSION_ID == 9* ]]; then
-        echo "Enabling CRB repository for CentOS Stream 9..."
-        dnf config-manager --set-enabled crb
-    elif [[ $VERSION_ID == 8* ]]; then
-        # For CentOS 8, the repo was called "PowerTools"
-        echo "Enabling PowerTools repository for CentOS Stream 8..."
-        dnf config-manager --set-enabled powertools
-    else
-        echo "Unsupported CentOS version: $VERSION_ID"
-        exit 1
-    fi
-# Handle other operating systems
-else
-    echo "This script is intended for RHEL or CentOS only. Aborting."
-    exit 1
-fi
-
-# Install the docker
-dnf install –y dnf-plugins-core 
-dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-dnf config-manager --set-enabled crb || 
-systemctl enable --now docker
-
-docker version
-
 # Disable swap
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
@@ -102,14 +52,20 @@ systemctl enable containerd > /dev/null 2>&1
 
 # --- [KUBERNETES PACKAGES] ---
 echo "--> [3/3] Installing kubeadm, kubelet, and kubectl..."
-# Add Kubernetes repo
+
+# Define the latest Kubernetes version
+K8S_VERSION="v1.30" # <-- CHANGE: Updated to the latest stable version
+
+# Add Kubernetes repo using the new community-owned repository
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+# <-- CHANGE: Updated repository URL to point to the latest stable version channel
+baseurl=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+# <-- CHANGE: Updated GPG key URL to match the new repository
+gpgkey=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
