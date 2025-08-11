@@ -144,5 +144,5 @@ echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
 echo ""
 echo "To add worker nodes to the cluster, run the following command on each worker:"
 echo "-------------------------------------------------------------------------"
-kubeadm token create --print-join-command
+echo kubeadm token create --print-join-command
 echo "-------------------------------------------------------------------------"
