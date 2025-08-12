@@ -144,6 +144,9 @@ echo "--> Installing Calico network CNI..."
 # <-- CHANGE: Updated Calico manifest URL to the latest version recommended by Project Calico
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.0/manifests/calico.yaml
 
+echo "--> Waiting for control plane node to become Ready (up to 5 minutes)..."
+kubectl --kubeconfig=/etc/kubernetes/admin.conf wait --for=condition=Ready node/$(hostname -s) --timeout=300s
+
 echo ""
 echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
 echo ""
