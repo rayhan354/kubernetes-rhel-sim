@@ -6,10 +6,10 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-echo "### [PHASE 1] Starting Kubernetes Worker Node Setup ###"
+echo "### [PHASE 1] Starting Kubernetes Control-Plane Setup ###"
 
 # --- [PREREQUISITES] ---
-echo "--> [1/3] Running prerequisite steps..."
+echo "--> [1/4] Running prerequisite steps..."
 
 # --- Source OS information ---
 if [ -f /etc/os-release ]; then
@@ -85,11 +85,11 @@ setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 # Configure firewall
-firewall-cmd --permanent --add-port={10250,30000-32767}/tcp > /dev/null 2>&1
+firewall-cmd --permanent --add-port={6443,2379-2380,10250,10251,10252,10257,10259}/tcp > /dev/null 2>&1
 firewall-cmd --reload > /dev/null 2>&1
 
 # --- [CONTAINER RUNTIME] ---
-echo "--> [2/3] Installing and configuring containerd..."
+echo "--> [2/4] Installing and configuring containerd..."
 # Install containerd
 dnf install -y containerd.io > /dev/null 2>&1
 
@@ -98,10 +98,10 @@ mkdir -p /etc/containerd
 containerd config default > /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 systemctl restart containerd
-systemctl enable containerd > /dev/null 2>&1
+systemctl enable --now containerd > /dev/null 2>&1
 
 # --- [KUBERNETES PACKAGES] ---
-echo "--> [3/3] Installing kubeadm, kubelet, and kubectl..."
+echo "--> [3/4] Installing kubeadm, kubelet, and kubectl..."
 
 # Define the latest Kubernetes version
 K8S_VERSION="v1.33" # <-- CHANGE: Updated to the latest stable version
@@ -116,14 +116,9 @@ enabled=1
 gpgcheck=1
 # <-- CHANGE: Updated GPG key URL to match the new repository
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni kubernetes
 EOF
 
 # Install packages
 dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes > /dev/null 2>&1
 systemctl enable --now kubelet > /dev/null 2>&1
-
-echo ""
-echo "### [SUCCESS] Worker node has been prepared! ###"
-echo ""
-echo "NOW, run the 'kubeadm join' command that you got from your control-plane node to add this node to the cluster."
