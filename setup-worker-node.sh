@@ -9,7 +9,7 @@ fi
 echo "### [PHASE 1] Starting Kubernetes Control-Plane Setup ###"
 
 # --- [PREREQUISITES] ---
-echo "--> [1/4] Running prerequisite steps..."
+echo "--> [1/3] Running prerequisite steps..."
 
 # --- Source OS information ---
 if [ -f /etc/os-release ]; then
@@ -89,7 +89,7 @@ firewall-cmd --permanent --add-port={6443,2379-2380,10250,10251,10252,10257,1025
 firewall-cmd --reload > /dev/null 2>&1
 
 # --- [CONTAINER RUNTIME] ---
-echo "--> [2/4] Installing and configuring containerd..."
+echo "--> [2/3] Installing and configuring containerd..."
 # Install containerd
 dnf install -y containerd.io > /dev/null 2>&1
 
@@ -101,7 +101,7 @@ systemctl restart containerd
 systemctl enable --now containerd > /dev/null 2>&1
 
 # --- [KUBERNETES PACKAGES] ---
-echo "--> [3/4] Installing kubeadm, kubelet, and kubectl..."
+echo "--> [3/3] Installing kubeadm, kubelet, and kubectl..."
 
 # Define the latest Kubernetes version
 K8S_VERSION="v1.30" # <-- CHANGE: Updated to the latest stable version
