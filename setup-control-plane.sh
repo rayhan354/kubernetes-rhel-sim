@@ -129,7 +129,7 @@ systemctl enable --now kubelet > /dev/null 2>&1
 echo "--> [4/4] Initializing Kubernetes cluster with kubeadm..."
 
 # Initialize control plane
-kubeadm init --pod-network-cidr=192.168.0.0/16
+kubeadm init --pod-network-cidr=10.244.0.0/16
 
 sleep 5
 
@@ -142,10 +142,9 @@ chown "$(id -u $(logname)):$(id -g $(logname))" "/home/$(logname)/.kube/config"
 sleep 5
 
 # --- [NETWORK CNI] ---
-echo "--> Installing Calico network CNI..."
-# <-- CHANGE: Updated Calico manifest URL to the latest version recommended by Project Calico
-kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+echo "--> Installing Flannel network CNI..."
+# <-- CHANGE: Updated Flannel manifest URL to the latest version recommended by Project Calico
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 
 echo ""
 echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
