@@ -1,7 +1,7 @@
 # The template for this file is available on GitHub: https://github.com/Dynatrace/dynatrace-operator/blob/v1.4.0/assets/samples/dynakube/v1beta3/logMonitoring.yaml
 apiVersion: v1
 data:
-  apiToken: ZHQwYzAxLkFISDVYTlBDMkRKSVJPREpWRjZaVU9XSy5PQ1IyMk5DN0dMWFVKR1RHNkZKVzZDR1dFSUtBQ0w1MkJXTkNQR0lGN05KTUdWSFpDRzVWR0ZKVTNES1BNUUxL
+  apiToken: ZHQwYzAxLkUyTElON0JRS0hTUURDQ1BTRVE0UFBIWS5QUks0V0NZRzNVVERNWFhUSlJOWkZEUVZBTEQ0SEVPRTJNRTdaSUVZWENJRUwzUzVOTUJFUTNPNTIzMkhIQU9D
   
 kind: Secret
 metadata:
@@ -87,7 +87,7 @@ spec:
   oneAgent:
     # Optional: Sets a host group for OneAgent.
     #
-    # hostGroup: ""
+    hostGroup: inst-354
 
     # Enables cloud-native fullstack monitoring and changes its settings
     # Cannot be used in conjunction with classic fullstack monitoring, application-only monitoring or host monitoring
