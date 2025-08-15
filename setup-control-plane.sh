@@ -56,7 +56,7 @@ fi
 # Install the docker
 dnf install –y dnf-plugins-core 
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce docker-ce-cli docker-buildx-plugin docker-compose-plugin
+dnf install -y docker-ce docker-ce-cli docker-buildx-plugin docker-compose-plugin containerd.io
 dnf config-manager --set-enabled crb || 
 systemctl enable --now docker
 
@@ -91,9 +91,7 @@ firewall-cmd --permanent --add-port={6443,2379-2380,10250,10251,10252,10257,1025
 firewall-cmd --reload > /dev/null 2>&1
 
 # --- [CONTAINER RUNTIME] ---
-echo "--> [2/4] Installing and configuring containerd..."
-# Install containerd
-dnf install -y containerd.io > /dev/null 2>&1
+echo "--> [2/4] Configuring containerd..."
 
 # Configure containerd and restart
 mkdir -p /etc/containerd
@@ -106,7 +104,6 @@ systemctl enable --now containerd > /dev/null 2>&1
 echo "--> [3/4] Installing kubeadm, kubelet, and kubectl..."
 
 # Define the latest Kubernetes version
-K8S_VERSION="v1.33" # <-- CHANGE: Updated to the latest stable version
 
 # Add Kubernetes repo using the new community-owned repository
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -118,7 +115,7 @@ enabled=1
 gpgcheck=1
 # <-- CHANGE: Updated GPG key URL to match the new repository
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni kubernetes
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni kubernetes # To prevent auto-updates
 EOF
 
 # Install packages
@@ -129,15 +126,17 @@ systemctl enable --now kubelet > /dev/null 2>&1
 echo "--> [4/4] Initializing Kubernetes cluster with kubeadm..."
 
 # Initialize control plane
-kubeadm init --pod-network-cidr=10.244.0.0/16
+kubeadm init --pod-network-cidr=10.244.0.0/16 # Exclusive pod IP address for Flannel
 
 sleep 5
 
 # Configure kubectl for the current user
 echo "--> Configuring kubectl for user: $(logname)"
-mkdir -p "/home/$(logname)/.kube"
-cp -i /etc/kubernetes/admin.conf "/home/$(logname)/.kube/config"
-chown "$(id -u $(logname)):$(id -g $(logname))" "/home/$(logname)/.kube/config"
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
 
 sleep 5
 
@@ -149,7 +148,7 @@ kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Doc
 echo ""
 echo "### [SUCCESS] Your Kubernetes control-plane has been initialized! ###"
 echo ""
-echo "To add worker nodes to the cluster, run the following command, then run the printed command on each worker:"
+echo "To add worker nodes to the cluster, run the 'kubeadm join ...' command. Or, generate another token using this command."
 echo "-------------------------------------------------------------------------"
 echo "kubeadm token create --print-join-command"
 echo "-------------------------------------------------------------------------"
