@@ -18,8 +18,6 @@ else
     echo "Cannot determine OS version. /etc/os-release not found."
     exit 1
 fi
-# change hostname to control-plane
-hostnamectl set-hostname control-plane
 
 # Check for RHEL
 if [[ $ID == "rhel" ]]; then
