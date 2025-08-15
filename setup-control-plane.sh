@@ -56,7 +56,7 @@ fi
 # Install the docker
 dnf install –y dnf-plugins-core 
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+dnf install -y docker-ce docker-ce-cli docker-buildx-plugin docker-compose-plugin
 dnf config-manager --set-enabled crb || 
 systemctl enable --now docker
 
