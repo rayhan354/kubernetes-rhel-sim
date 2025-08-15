@@ -113,11 +113,11 @@ cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 # <-- CHANGE: Updated repository URL to point to the latest stable version channel
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
 enabled=1
 gpgcheck=1
 # <-- CHANGE: Updated GPG key URL to match the new repository
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.33/rpm/repodata/repomd.xml.key
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni kubernetes
 EOF
 
