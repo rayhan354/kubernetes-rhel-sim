@@ -107,11 +107,11 @@ echo "--> [3/4] Installing kubeadm, kubelet, and kubectl..."
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-# <-- CHANGE: Updated repository URL to point to the latest stable version channel
+# <-- CHANGE: Updated repository URL to point to version 1.30
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
 enabled=1
 gpgcheck=1
-# <-- CHANGE: Updated GPG key URL to match the new repository
+# <-- CHANGE: Updated GPG key URL to match the repository
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni kubernetes # To prevent auto-updates
 EOF
