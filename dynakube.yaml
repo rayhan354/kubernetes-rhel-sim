@@ -1,25 +1,25 @@
 # The template for this file is available on GitHub: https://github.com/Dynatrace/dynatrace-operator/blob/v1.4.0/assets/samples/dynakube/v1beta3/logMonitoring.yaml
 apiVersion: v1
 data:
-  apiToken: ZHQwYzAxLkUyTElON0JRS0hTUURDQ1BTRVE0UFBIWS5QUks0V0NZRzNVVERNWFhUSlJOWkZEUVZBTEQ0SEVPRTJNRTdaSUVZWENJRUwzUzVOTUJFUTNPNTIzMkhIQU9D
+  apiToken: ZHQwYzAxLkpEWVBJNEZaMzNEVjNVT1IzRExNWENJNC5TRk5FMlRJVEpRQ0hUTE1FT0tVRzdRS0NEN0c0S00zT1VPTDNGWU1YNTVCVVlBWUZQTkZYTkZPRkJTN1VSQlVN
   
 kind: Secret
 metadata:
-  name: kubernetes
+  name: rayhan354-lab
   namespace: dynatrace
 type: Opaque
 ---
 apiVersion: dynatrace.com/v1beta3
 kind: DynaKube
 metadata:
-  name: kubernetes
+  name: rayhan354-lab
   namespace: dynatrace
 spec:
   # Dynatrace apiUrl including the `/api` path at the end.
   # For SaaS, set `ENVIRONMENTID` to your environment ID.
   # For Managed, change the apiUrl address.
   # For instructions on how to determine the environment ID and how to configure the apiUrl address, see https://www.dynatrace.com/support/help/reference/dynatrace-concepts/environment-id/.
-  apiUrl: https://gue16211.live.dynatrace.com/api
+  apiUrl: https://ksa15727.live.dynatrace.com/api
 
   # Optional: Name of the secret holding the credentials required to connect to the Dynatrace tenant
   # If unset, the name of this custom resource is used
@@ -87,7 +87,7 @@ spec:
   oneAgent:
     # Optional: Sets a host group for OneAgent.
     #
-    hostGroup: inst-354
+    hostGroup: rayhan354
 
     # Enables cloud-native fullstack monitoring and changes its settings
     # Cannot be used in conjunction with classic fullstack monitoring, application-only monitoring or host monitoring
@@ -311,7 +311,4 @@ spec:
     #
     # topologySpreadConstraints: []
 
-  # Optional: Enables and controls log-monitoring. By providing ingest rule matchers, users can
-  # control what should be considered for logging.
-  #
-  logMonitoring: {}
+  
